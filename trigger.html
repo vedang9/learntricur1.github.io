@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="trigger-style.css">
+        <link rel="stylesheet" href="style-nav.css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Jost&display=swap" rel="stylesheet">
+        <link rel="icon" sizes="200x200" href="logo5.png" >
+    </head>
+
+    <body>
+        <div class="bookmark">
+            <ul>
+                <a href="#T1"><li><div><b>AFTER INSERT</b></div></li></a>
+                <a href="#T2"><li><div><b>AFTER UPDATE</b></div></li></a>
+                <a href="#T3"><li><div><b>AFTER DELETE</b></div></li></a>
+                <a href="#T4"><li><div><b>BEFORE INSERT</b></div></li></a>
+                <a href="#T5"><li><div><b>BEFORE UPDATE</b></div></li></a>
+                <a href="#T6"><li><div><b>BEFORE DELETE</b></div></li></a>
+            </ul>
+        </div>
+
+
+        <div class="content">
+            <h1> TRIGGER</h1><br>
+            <hr><br>
+            <p><b>Triggers</b> are stored programs, which are automatically executed or fired when some events occur.
+                We first specify when the trigger is to be executed and then the action to be performed when the trigger executes. 
+                Triggers are used to specify certain integrity constraints and referential constraints that cannot be specified 
+                using the constraint mechanism of SQL.
+                <br>
+                <br>
+                Triggers are, in fact, written to be executed in response to any of the following events −
+                <ul>
+                    <li>A <b>database manipulation (DML)</b> statement (DELETE, INSERT, or UPDATE)</li>
+                    <li>A <b>database definition (DDL)</b> statement (CREATE, ALTER, or DROP).</li>
+                    <li>A <b>database operation</b> (SERVERERROR, LOGON, LOGOFF, STARTUP, or SHUTDOWN).</li>
+                </ul><br>
+
+                <h3>Example –</h3>
+                Suppose, we are adding a tupple to the ‘Donors’ table that is some person has donated blood. So, 
+                we can design a trigger that will automatically add the value of donated blood to the ‘Blood_record’ table.
+            </p><br>
+
+            <h2>Types of Triggers –</h2><br>
+            <ol>
+                <li><b>AFTER INSERT:</b> activated after data is inserted into the table.</li>
+                <li><b>AFTER UPDATE:</b> activated after data in the table is modified.</li>
+                <li><b>AFTER DELETE:</b> activated after data is deleted/removed from the table.</li>
+                <li><b>BEFORE INSERT:</b> activated before data is inserted into the table.</li>
+                <li><b>BEFORE UPDATE:</b> activated before data in the table is modified.</li>
+                <li><b>BEFORE DELETE:</b> activated before data is deleted/removed from the table.</li>
+            </ol>
+            <br>
+            <hr>
+            <br>
+            <h2><b>Syntax</b></h2><br>
+            <div class="syntax">
+                create trigger [trigger_name] <br>
+                [before | after]  <br>
+                {insert | update | delete} <br> 
+                on [table_name]  <br>
+                [for each row]  <br>
+                [trigger_body] <br>
+            </div><br><hr><br>
+            
+            <h2 id="T1"><b>1. Before Update Trigger:</b></h2><br>
+            <p>As the name implies, it is a trigger which enacts before an update is invoked. 
+                If we write an update statement, then the actions of the trigger will be performed before 
+                the update is implemented.
+            </p><br>
+            <h3>Example:</h3>
+            <p>Considering tables:</p><br>
+
+            <div class="syntax">
+                create table customer<br> 
+                (acc_no integer primary key,<br> 
+                cust_name varchar(20),<br> 
+                avail_balance decimal);<br>
+                create table mini_statement (acc_no integer, <br>
+                avail_balance decimal, <br>
+                foreign key(acc_no) references customer(acc_no) on delete cascade); <br>
+            </div><br>
+            
+            <p>Inserting values in them:</p>
+            <div class="syntax">
+                insert into customer values (1000, "Fanny", 7000);<br>
+                insert into customer values (1001, "Peter", 12000); <br>
+            </div><br>
+
+            <p>Trigger to insert (old) values into a mini_statement record (including account number and available 
+                balance as parameters) before updating any record in customer record/table:</p>
+            <div class="syntax">
+                create trigger update_cus<br>
+                -> before update on customer<br>
+                -> for each row<br>
+                -> begin<br>
+                -> insert into mini_statement values (old.acc_no, old.avail_balance);<br>
+                -> end; /
+            </div><br>
+            <p>Making updates to invoke trigger:</p>
+            <div class="syntax">
+                update customer set avail_balance = avail_balance + 3000 where acc_no = 1001;<br>
+                update customer set avail_balance = avail_balance + 3000 where acc_no = 1000; 
+            </div><br>
+
+            <h3>Output:</h3>
+            <div class="syntax">
+                <p>select *from mini_statement;</p><br>
+                <table class="table">
+                    <tr>
+                        <th>acc_no</th>
+                        <th>avail_balance</th>
+                    </tr>
+                    <tr>
+                        <td>1001</td>
+                        <td>12000</td>
+                    </tr>
+                    <tr>
+                        <td>1000</td>
+                        <td>7000</td>
+                    </tr>
+                </table>
+            </div><br>
+            <hr><br>
+
+            <h2 id="T2">2. After Update Trigger:</h2><br>
+            <p>As the name implies, this trigger is invoked after an updation occurs. 
+                (i.e., it gets implemented after an update statement is executed.).
+            </p><br>
+            <h3>Example:</h3>
+            <p>We create another table:</p>
+            <div class="syntax">
+                create table micro_statement (acc_no integer, <br>
+                avail_balance decimal, <br>
+                foreign key(acc_no) references customer(acc_no) on delete cascade); 
+            </div><br>
+            <p>Insert another value into customer:</p>
+            <div class="syntax">
+                insert into customer values (1002, "Janitor", 4500);
+            </div><br>
+            <p>Trigger to insert (new) values of account number and available balance into micro_statement record after an update has occurred:</p>
+            <div class="syntax">
+            create trigger update_after<br>
+             -> after update on customer<br>
+             -> for each row<br>
+             -> begin<br>
+            -> insert into micro_statement values(new.acc_no, new.avail_balance);<br>
+            -> end; /
+            </div><br>
+            <p>Making an update to invoke trigger:</p>
+            <div class="syntax">
+                update customer set avail_balance = avail_balance + 1500 where acc_no = 1002; 
+            </div><br>
+            <h3>Output:</h3>
+            <div class="syntax">
+                <p>select *from mini_statement;</p><br>
+                <table class="table">
+                    <tr>
+                        <th>acc_no</th>
+                        <th>avail_balance</th>
+                    </tr>
+                    <tr>
+                        <td>1002</td>
+                        <td>6000</td>
+                    </tr>
+                </table>
+            </div><br>
+            <hr><br>
+
+            <h2 id="T3">3. Before Insert Trigger:</h2><br>
+            <p>As the name implies, this trigger is invoked before an insert, or before an insert statement is executed.</p>
+            <br>
+            <h3>Example:</h3>
+            <p>Considering tables:</p>
+            <div class="syntax">
+                create table contacts (contact_id INT (11) NOT NULL AUTO_INCREMENT,<br> 
+                last_name VARCHAR (30) NOT NULL, first_name VARCHAR (25),<br>
+                ->birthday DATE, created_date DATE, <br>
+                created_by VARCHAR(30), <br>
+                CONSTRAINT contacts_pk PRIMARY KEY (contact_id)); 
+            </div><br>
+            <p>Trigger to insert contact information such as name, birthday and creation-date/user into a table contact before an insert occurs:</p>
+            <div class="syntax">
+                create trigger contacts_before_insert<br>
+                -> before insert<br>
+                -> on contacts for each row<br>
+                -> begin<br>
+                ->    DECLARE vUser varchar(50);<br>
+                -><br>
+                ->    -- Find username of person performing INSERT into table<br>
+                ->    select USER() into vUser;<br>
+                -><br>
+                ->    -- Update create_date field to current system date<br>
+                ->    SET NEW.created_date = SYSDATE();<br>
+                -><br>
+                ->    -- Update created_by field to the username of the person performing the INSERT<br>
+                ->    SET NEW.created_by = vUser;<br>
+                -> end; /
+            </div><br>
+            <p>Making an insert to invoke the trigger:</p>
+            <div class="syntax">
+                insert into contacts values (1, "Newton", "Enigma", <br>
+                str_to_date ("19-08-1999", "%d-%m-%Y"), <br>
+                str_to_date ("17-03-2018", "%d-%m-%Y"), "xyz");<br> 
+            </div><br>
+            <h3>Output:</h3>
+            <div class="syntax">
+                <p>select *from contacts;</p><br>
+                <table class="table">
+                    <tr>
+                        <th>contact_id</th>
+                        <th>last_name</th>
+                        <th>first_name</th>
+                        <th>birthday
+                        <th>created_date</th>
+                        <th>created_by</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Newton</td>
+                        <td>Enigma</td>
+                        <td>1999-08-19</td>
+                        <td>2019-05-11</td>
+                        <td>root@local<br>host</td>
+                    </tr>
+                </table>
+            </div><br>
+            <hr><br>
+
+            <h2 id="T4">4. After Insert Trigger:</h2><br>
+            <p>As the name implies, this trigger gets invoked after an insert is implemented.</p><br>
+            <h3>Example:</h3>
+            <p>Consider tables:</p><br>
+            <div class="syntax">
+                create table contacts (contact_id int (11) NOT NULL AUTO_INCREMENT, <br>
+                last_name VARCHAR(30) NOT NULL, <br>
+                first_name VARCHAR(25), birthday DATE,<br>
+                ->CONSTRAINT contacts_pk PRIMARY KEY (contact_id));<br>
+                create table contacts_audit (contact_id integer, <br>
+                created_date date, <br>
+                created_by varchar (30)); 
+            </div><br>
+            <p>Trigger to insert contact_id and contact creation-date/user information into contacts_audit record after an insert occurs:</p>
+            <div class="syntax">
+                create trigger contacts_after_insert<br>
+                -> after insert<br>
+                -> on contacts for each row<br>
+                -> begin<br>
+                -> DECLARE vUser varchar(50);<br>
+                -><br>
+                -> -- Find username of person perfor<br>ming the INSERT into table
+                -> SELECT USER() into vUser;<br>
+                -><br>
+                -> -- Insert record into audit table<br>
+                -> INSERT into contacts_audit<br>
+                -> ( contact_id,<br>
+                -> created_date,<br>
+                -> created_by)<br>
+                -> VALUES<br>
+                -> ( NEW.contact_id,<br>
+                -> SYSDATE(),<br>
+                -> vUser );<br>
+                -> END; /
+            </div><br>
+            <p>Making an insert to invoke the trigger:</p>
+            <div class="syntax">
+                insert into contacts values (1, "Kumar", "Rupesh", <br>
+                str_to_date("20-06-1999", "%d-%m-%Y")); 
+            </div><br>
+            <h3>Output:</h3>
+            <div class="syntax">
+                <p>select *from contacts;</p><br>
+                <table class="table">
+                    <tr>
+                        <th>contact_id</th>
+                        <th>created_date</th>
+                        <th>created_by</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2019-05-11</td>
+                        <td>root@localhost</td>
+                    </tr>
+                </table>
+            </div><br>
+            <hr><br>
+
+            <h2 id="T5">5. Before Delete Trigger:</h2><br>
+            <p>As the name implies, this trigger is invoked before a delete occurs, or before deletion statement is implemented.</p>
+            <br>
+            <h3>Example:</h3>
+            <p>Consider tables:</p>
+            <div class="syntax">
+                create table contacts (contact_id int (11) NOT NULL AUTO_INCREMENT, <br>
+                last_name VARCHAR (30) NOT NULL,<br>
+                 first_name VARCHAR (25), <br>
+                birthday DATE,<br>
+                 created_date DATE, <br>
+                 created_by VARCHAR(30), <br>
+                CONSTRAINT contacts_pk PRIMARY KEY (contact_id));<br><br>
+                create table contacts_audit (contact_id integer,<br>
+                 deleted_date date,<br>
+                 deleted_by varchar(20)); 
+            </div><br>
+            <p>Trigger to insert contact_id and contact deletion-date/user information into contacts_audit record before a delete occurs:</p>
+            <div class="syntax">
+                create trigger contacts_before_delete<br>
+                -> before delete<br>
+                -> on contacts for each row<br>
+                -> begin<br>
+                -><br>
+                -> DECLARE vUser varchar(50);<br>
+                -><br>
+                -> -- Find username of person performing the DELETE into table<br>
+                -> SELECT USER() into vUser;<br>
+                -><br>
+                -> -- Insert record into audit table<br>
+                -> INSERT into contacts_audit<br>
+                -> ( contact_id,<br>
+                -> deleted_date,<br>
+                -> deleted_by)<br>
+                -> VALUES<br>
+                -> ( OLD.contact_id,<br>
+                -> SYSDATE(),<br>
+                -> vUser );<br>
+                -> end; /
+            </div><br>
+            <p>Making an insert and then deleting the same to invoke the trigger:</p>
+            <div class="syntax">
+                insert into contacts values (1, "Bond", "Ruskin", <br>
+                str_to_date ("19-08-1995", "%d-%m-%Y"), <br>
+                str_to_date ("27-04-2018", "%d-%m-%Y"), "xyz");<br>
+                delete from contacts where last_name="Bond"; 
+            </div><br>
+            <h3>Output:</h3>
+            <div class="syntax">
+                insert into contacts values (1, "Newton", "Enigma", <br>
+                str_to_date ("19-08-1999", "%d-%m-%Y"), <br>
+                str_to_date ("17-03-2018", "%d-%m-%Y"), "xyz");<br> 
+            </div><br>
+            <h3>Output:</h3>
+            <div class="syntax">
+                <p>select *from contacts_audit;</p><br>
+                <table class="table">
+                    <tr>
+                        <th>contact_id</th>
+                        <th>deleted_date</th>
+                        <th>deleted_by</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2019-05-11</td>
+                        <td>root@localhost</td>
+                    </tr>
+                </table>
+            </div><br>
+            <hr><br>
+
+            <h2 id="T6">6. After Delete Trigger:</h2><br>
+            <p>As the name implies, this trigger is invoked after a delete occurs, or after a delete operation is implemented.</p>
+            <br>
+            <h3>Example:</h3>
+            <p>Consider the tables:</p>
+            <div class="syntax">
+                create table contacts (contact_id int (11) NOT NULL AUTO_INCREMENT, <br>
+                last_name VARCHAR (30) NOT NULL, <br>
+                first_name VARCHAR (25), <br>
+                birthday DATE, <br>
+                created_date DATE, <br>
+                created_by VARCHAR (30), <br>
+                CONSTRAINT contacts_pk PRIMARY KEY (contact_id));<br>
+                create table contacts_audit (contact_id integer, <br>
+                deleted_date date, <br>
+                deleted_by varchar(20));
+            </div><br>
+            <p>Trigger to insert contact_id and contact deletion-date/user information into contacts_audit record after a delete occurs:</p>
+            <div class="syntax">
+                create trigger contacts_after_delete<br>
+                -> after delete<br>
+                -> on contacts for each row<br>
+                -> begin<br>
+                -><br>
+                -> DECLARE vUser varchar(50);<br>
+                -><br>
+                -> -- Find username of person performing the DELETE into table<br>
+                -> SELECT USER() into vUser;<br>
+                -><br>
+                -> -- Insert record into audit table<br>
+                -> INSERT into contacts_audit<br>
+                -> ( contact_id,<br>
+                -> deleted_date,<br>
+                -> deleted_by)<br>
+                -> VALUES<br>
+                -> ( OLD.contact_id,<br>
+                -> SYSDATE(),<br>
+                -> vUser );<br>
+                -> end; / 
+            </div><br>
+            <p>Making an insert and deleting the same to invoke the trigger:</p>
+            <div class="syntax">
+                insert into contacts values (1, "Newton", "Isaac", <br>
+                str_to_date ("19-08-1985", "%d-%m-%Y"), <br>
+                str_to_date ("23-07-2018", "%d-%m-%Y"), "xyz");<br>
+                delete from contacts where first_name="Isaac"; 
+            </div><br>
+            <h3>Output:</h3>
+            <div class="syntax">
+                <p>select *from contacts_audit;</p><br>
+                <table class="table">
+                    <tr>
+                        <th>contact_id</th>
+                        <th>deleted_date</th>
+                        <th>deleted_by</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2019-05-11</td>
+                        <td>root@localhost</td>
+                    </tr>
+                </table>
+            </div><br>
+            <hr><br>
+
+        </div>
+
+        
+
+        <nav>
+            <div class="logo">
+                <img src="logo5.png">
+                <h4>TriCur</h4>
+            </div>
+            <ul class="nav-links">
+                <li>
+                    <a href="file:///D:/DBMS%20DA%203/index.html">Home</a>
+                </li>
+                <li>
+                    <a href="file:///D:/DBMS%20DA%203/cursor.html">Cursor</a>
+                </li>
+                <li>
+                    <a href="file:///D:/DBMS%20DA%203/trigger.html#T2">Trigger</a>
+                </li>
+            </ul>
+    
+            <div class="burger">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </nav> 
+        
+        <script src="app1.js"></script>
+    
+    </body>
+</html>

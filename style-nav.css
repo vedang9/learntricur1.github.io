@@ -1,0 +1,149 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+nav{
+    
+    background: #085078;  
+    background: linear-gradient(to left, #85D8CE, #085078); 
+    height:8vh;
+    padding-top:12px;
+    display:flex;
+    position:fixed;
+    top:0px;
+    right:0px;
+    width:100%;
+    box-shadow: 0px 10px 30px 10px;
+}
+
+nav img{
+    height:"8px";
+    border-radius:100%;
+    width:46px;
+    transform: translate(20px,-10px);
+    
+}
+
+nav h4{
+    transform: translate(80px,-65px);
+}
+
+body{
+    overflow-x: hidden;
+}
+
+.logo{
+    color:white;
+    font-size:35px;
+    letter-spacing:2px;
+    word-spacing:5px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.nav-links{
+    background: #085078;  
+    background: linear-gradient(  210deg, #85D8CE, #085078); 
+    position: absolute;
+    height:92vh;
+    width:300px;
+    right:0px;
+    top:8vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    transform:translateX(100%);
+    transition: transform 0.5s ease-in;
+
+}
+
+.nav-links a{
+    text-decoration: none;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 25px;
+    
+}
+
+.nav-links a:hover{
+    animation: navlinkColor 3s infinite;
+    
+}
+
+.nav-links li{
+    list-style: none;
+    margin:80px;
+    opacity:0;
+}
+
+
+.burger{
+    position:absolute;;
+    right:80px;
+    cursor:pointer;
+}
+
+.burger div{
+    background-color: white;
+    height:3px;
+    width:25px;
+    margin:5px;
+    transition:all 0.3s ease;
+}
+
+.nav-active{
+    transform:translateX(0%);
+}
+
+@keyframes navLinkFade{
+    from{
+        opacity:0;
+        transform: translate(50px);
+    }
+    to{
+        opacity:1;
+        transform: translate(0px);
+    }
+}
+
+.toggle .line1{
+    transform:rotate(-45deg) translate(-5px,6px);
+}
+
+.toggle .line2{
+    opacity:0;
+}
+
+.toggle .line3{
+    transform:rotate(45deg) translate(-5px,-6px);
+}
+
+@keyframes navlinkColor{
+    0%{
+        color:red;
+    }
+    25%{
+        color: yellow;
+    }   
+    50%{
+        color: rgb(15, 143, 11);
+    }
+    75%{
+        color:purple;
+    }
+    100%{
+        color:red;
+    }
+}
+
+@keyframes navlinkRotate{
+    50%{
+        transform: rotateX(180deg);
+    }
+    100%{
+        transform: rotateX(360deg);
+    }
+}
+
+
+

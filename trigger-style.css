@@ -1,0 +1,103 @@
+html{
+  scroll-behavior: smooth;
+}
+
+body{
+    background: #2C3E50;  
+    background: linear-gradient(to left, #4CA1AF, #2C3E50); 
+
+}
+
+.content{
+    background: #757F9A;  
+    background: linear-gradient(to right, #D7DDE8, #757F9A); 
+    width:60%;
+    padding:30px;
+    box-shadow: -10px 10px 20px 10px;
+    line-height: 25px;
+    border:none;
+    font-family: 'Open Sans', sans-serif;
+    transform: translate(29.5%,-3.2%);
+    font-weight: 600;
+}
+
+.content li{
+    margin-left: 25px;
+    
+}
+
+.syntax{
+    background: #485563;  
+    background: linear-gradient(to right, #29323c, #485563); 
+    padding:20px;
+    color: white;
+    line-height: 30px;
+    letter-spacing: 1px;
+    font-family: 'Source Code Pro', monospace;
+    margin-top:10px;
+    position:relative;
+}
+
+table {
+    
+    width:100%;
+    color:white;
+  }
+  table, th, td {
+    border: 2px solid black;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 6px;
+    text-align: left;
+  }
+  .table tr:nth-child(even) {
+    background-color:#29323c;
+  }
+  .table tr:nth-child(odd) {
+   background-color:#485563;
+  }
+  .table th {
+    background: #485563;
+    color: white;
+  }
+
+.bookmark{
+    background-color: rgba(255, 255, 255, 0.1);
+    position: sticky;
+    width:220px;
+    top:20%;
+    left:10px;
+    height:440px;
+    padding:5px;
+    
+}
+.bookmark ul{
+    list-style-type: none;
+    text-align: center;
+}
+.bookmark li{
+    margin:10px;
+    background: #34e89e;  
+    background: linear-gradient(to right, #0f3443, #34e89e); 
+    width:90%;
+    height:60px;
+    font-family: 'Jost', sans-serif;
+    transition: 0.2s ease-in;
+}
+
+.bookmark div{
+  position:relative;
+  top:30%;
+  letter-spacing: 2px;
+}
+
+.bookmark a{
+  text-decoration: none;
+  color:white;
+  transition: 0.5s ease-in;
+}
+
+.bookmark li:hover{
+  transform:scale(1.1)
+}
